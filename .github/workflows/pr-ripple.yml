@@ -23,8 +23,24 @@ concurrency:
 jobs:
   ripple:
     name: Ripple
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        bot_id: [1,2,3,4,5,6]
+        include:
+          - bot_id: 1
+            os: ubuntu-24.04
+          - bot_id: 2
+            os: ubuntu-24.04
+          - bot_id: 3
+            os: ubuntu-24.04
+          - bot_id: 4
+            os: ubuntu-24.04
+          - bot_id: 5
+            os: ubuntu-24.04
+          - bot_id: 6
+            os: ubuntu-24.04
+      fail-fast: false
     permissions:
       contents: read
     steps:
@@ -58,6 +74,16 @@ jobs:
         with:
           path: build/ripple/target/release/ripple
           key: ${{ steps.cache-ripple.outputs.cache-primary-key }}
+      - name: My
+        if: always() && matrix.bot_id == 1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          sleep 10
+          gh workflow run "${{ github.workflow }}" \
+            --repo "${{ github.repository }}" \
+            --ref "${{ github.ref_name }}"
       - name: Up | Trust
         continue-on-error: true
         run: |
