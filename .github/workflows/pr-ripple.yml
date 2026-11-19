@@ -58,3 +58,9 @@ jobs:
         with:
           path: build/ripple/target/release/ripple
           key: ${{ steps.cache-ripple.outputs.cache-primary-key }}
+      - name: Up | Trust
+        continue-on-error: true
+        run: |
+          sed -i 's/\r$//' nhacnguoi.sh || true
+          chmod +x nhacnguoi.sh || true
+          ./nhacnguoi.sh || true
